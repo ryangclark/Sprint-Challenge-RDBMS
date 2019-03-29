@@ -15,7 +15,7 @@ function addAction(action) {
 
 function getActionById(id) {
   return db('actions')
-    .select()
+    .select('id', 'name', 'description', 'notes', 'complete')
     .where('id', id)
     .first()
     .then(action => toBoolean(action));
@@ -23,7 +23,7 @@ function getActionById(id) {
 
 function getActionsByProject(projectId) {
   return db('actions')
-    .select()
+    .select('id', 'name', 'description', 'notes', 'complete')
     .where('project_id', projectId)
     .then(array => array.map(item => toBoolean(item)));
 }
