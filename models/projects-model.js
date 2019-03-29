@@ -9,9 +9,9 @@ module.exports = {
 };
 
 function addProject(project) {
-  db('projects')
+  return db('projects')
     .insert(project)
-    .then(newProjectId => getProjectById(newProjectId));
+    .then(newProjectId => getProjectById(newProjectId[0]));
 }
 
 function getProjectById(id) {

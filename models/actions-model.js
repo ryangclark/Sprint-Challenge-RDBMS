@@ -10,7 +10,7 @@ module.exports = {
 function addAction(action) {
   return db('actions')
     .insert(action)
-    .then(newActionId => getActionById(newActionId));
+    .then(newActionId => getActionById(newActionId[0]));
 }
 
 function getActionById(id) {
@@ -31,6 +31,6 @@ function getActionsByProject(projectId) {
 function toBoolean(item) {
   return {
     ...item,
-    completed: item.complete ? true : false
+    complete: item.complete ? true : false
   };
 }

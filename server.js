@@ -9,7 +9,7 @@ const server = express();
 server.use(helmet());
 server.use(express.json());
 
-function handleServerError(error) {
+function handleServerError(res, error) {
   console.error(error);
   return res
     .status(500)
@@ -26,7 +26,7 @@ server.post('/api/projects', (req, res) => {
   }
   projectsDB.addProject(req.body)
     .then(newProject => res.status(201).json(newProject))
-    .catch(error => handleServerError(error));
+    .catch(error => handleServerError(res, error));
 });
 
 // POST /api/actions
@@ -44,7 +44,7 @@ server.post('/api/actions', (req, res) => {
   }
   actionsDB.addAction(req.body)
     .then(updatedProject => res.status(201).json(updatedProject))
-    .catch(error => handleServerError(error));
+    .catch(error => handleServerError(res, error));
 });
 
 // GET /api/projects/:id
@@ -61,7 +61,7 @@ server.get('/api/projects/:id', (req, res) => {
         res.status(200).json(project);
       }
     })
-    .catch(error => handleServerError(error));
+    .catch(error => handleServerError(res, error));
 });
 
 module.exports = server;
