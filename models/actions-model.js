@@ -3,24 +3,34 @@ const db = require('../data/dbConfig');
 module.exports = {
   addAction,
   getActionById,
-  getActionsByProject
+  getActionsByProject,
+  toBoolean
 };
 
 function addAction(action) {
-  db('actions')
+  return db('actions')
     .insert(action)
     .then(newActionId => getActionById(newActionId));
 }
 
 function getActionById(id) {
-  db('actions')
+  return db('actions')
     .select()
     .where('id', id)
-    .first();
+    .first()
+    .then(action => toBoolean(action));
 }
 
 function getActionsByProject(projectId) {
-  db('actions')
+  return db('actions')
     .select()
-    .where('project_id', projectId);
+    .where('project_id', projectId)
+    .then(array => array.map(item => toBoolean(item)));
+}
+
+function toBoolean(item) {
+  return {
+    ...item,
+    completed: item.complete ? true : false
+  };
 }

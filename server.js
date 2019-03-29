@@ -1,9 +1,12 @@
 const express = require('express');
 const helmet = require('helmet');
 
+const actionsDB = require('./models/actions-model');
+const projectsDB = require('./models/projects-model');
+
 const server = express();
 
-server.use(helmet);
+server.use(helmet());
 server.use(express.json());
 
 function handleServerError(error) {
@@ -21,7 +24,7 @@ server.post('/api/projects', (req, res) => {
       .status(400)
       .json({ message: 'Please include a `name` property.' });
   }
-  db.addProject(req.body)
+  projectsDB.addProject(req.body)
     .then(newProject => res.status(201).json(newProject))
     .catch(error => handleServerError(error));
 });
@@ -34,20 +37,21 @@ server.post('/api/actions', (req, res) => {
       .status(400)
       .json({ message: 'Please include `project_id` and `name` properties.' });
   }
-  if (!db.getProjectById(req.body.project_id)) {
+  if (!projectsDB.getProjectById(req.body.project_id)) {
     return res
       .status(404)
       .json({ message: `No project found with ID ${req.body.project_id}` });
   }
-  db.addAction(req.body)
+  actionsDB.addAction(req.body)
     .then(updatedProject => res.status(201).json(updatedProject))
     .catch(error => handleServerError(error));
 });
 
-// GET /api/project/:id
-// Return the project for a given `id`
-server.get('/api/project/:id', (req, res) => {
-  db.getProjectById(req.params.id)
+// GET /api/projects/:id
+// Return the project for a given `id` including actions
+server.get('/api/projects/:id', (req, res) => {
+  projectsDB.getProjectWithActions(req.params.id)
+  // actionsDB.getActionsByProject(req.params.id)
     .then(project => {
       if (!project) {
         return res

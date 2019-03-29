@@ -18,14 +18,20 @@ function getProjectById(id) {
   return db('projects')
     .select()
     .where('id', id)
-    .first();
+    .first()
+    .then(project => actionsDB.toBoolean(project));
 }
 
-function getProjectWithActions(id) {
-  const project = getProjectById(id);
-  if (project) {
-    return { ...project, actions: actionsDB.getActionsByProject(id) };
-  } else {
-    return null;
+async function getProjectWithActions(id) {
+  try {
+    const project = await getProjectById(id);
+    if (project) {
+      const actions = await actionsDB.getActionsByProject(id);
+      return { ...project, actions: actions };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
   }
 }

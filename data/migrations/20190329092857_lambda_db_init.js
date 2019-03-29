@@ -25,7 +25,7 @@ exports.up = function(knex, Promise) {
       table.text('description');
       table.text('notes');
       table
-        .boolean('completed')
+        .boolean('complete')
         .notNullable()
         .defaultTo(false);
     });
